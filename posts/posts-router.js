@@ -18,6 +18,21 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/:id', async (req, res) => {
+    try {
+        let posts = await db.findById(req.params.id)
+        if (posts.length === 0) {
+            res.status(404).json({ message: "The post with the specified ID does not exist." })
+        }
+        else {
+            const post = posts[0];
+            res.status(200).json(post)
+        }
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ error: "Internal server error. The posts information could not be retrieved." })
+    }
+})
 
 //Export the router for the server.js
 module.exports = router;
