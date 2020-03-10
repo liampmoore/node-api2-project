@@ -8,6 +8,10 @@ const router = express.Router();
 
 //Write all the http methods for this route, for blog posts
 
+router.get('/', (req, res) => {
+    res.status(200).send('router is working');
+})
+
 
 
 module.exports = router;
