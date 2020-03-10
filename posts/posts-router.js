@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     try {
         let posts = await db.find()
         res.status(200).json(posts)
-    } catch(err) {
+    } catch (err) {
         console.log(err)
         res.status(500).json({ error: "The posts information could not be retrieved." })
     }
@@ -28,11 +28,36 @@ router.get('/:id', async (req, res) => {
             const post = posts[0];
             res.status(200).json(post)
         }
-    } catch(err) {
+    } catch (err) {
         console.log(err)
         res.status(500).json({ error: "Internal server error. The posts information could not be retrieved." })
     }
 })
+
+
+router.get('/:id/comments', async (req, res) => {
+    try {
+        let posts = await db.findById(req.params.id)
+        if (posts.length === 0) {
+            res.status(404).json({ message: "The post with the specified ID does not exist." })
+        }
+        else {
+            try {
+                let comments = await db.findPostComments(req.params.id)
+                res.status(200).json(comments)
+            }
+            catch {
+                console.log(err)
+                res.status(500).json({ error: "The comments information could not be retrieved." })
+            }
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ error: "The comments information could not be retrieved." })
+    }
+})
+
+
 
 //Export the router for the server.js
 module.exports = router;
