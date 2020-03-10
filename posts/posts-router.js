@@ -9,8 +9,13 @@ const router = express.Router();
 //Write all the http methods for this route, for blog posts
 
 router.get('/', async (req, res) => {
-    const posts = await db.find();
-    res.status(200).json(posts)
+    try {
+        let posts = await db.find()
+        res.status(200).json(posts)
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ error: "The posts information could not be retrieved." })
+    }
 })
 
 
