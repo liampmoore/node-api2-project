@@ -36,19 +36,20 @@ router.get('/:id', async (req, res) => {
 
 router.get('/:id/comments', async (req, res) => {
     try {
-    let posts = await db.findById(req.params.id);
-    if (posts.length === 0) {
-        res.status(404).json({ message: `The post with the ID ${req.params.id} does not exist.` })
-    }
-    else {
-        let comments = await db.findPostComments(req.params.id);
-        if (comments.length > 0) {
-            res.status(200).json(comments)
+        let posts = await db.findById(req.params.id);
+        if (posts.length === 0) {
+            res.status(404).json({ message: `The post with the ID ${req.params.id} does not exist.` })
         }
         else {
-            res.status(404).json({ error: `Could not find any comments for post id ${req.params.id}.` })
+            let comments = await db.findPostComments(req.params.id);
+            if (comments.length > 0) {
+                res.status(200).json(comments)
+            }
+            else {
+                res.status(404).json({ error: `Could not find any comments for post id ${req.params.id}.` })
+            }
         }
-    }} catch {
+    } catch {
         res.status(500).json({ error: "The comments information could not be retrieved." })
     }
 })
@@ -66,6 +67,29 @@ router.post('/', async (req, res) => {
     }
     catch {
         res.status(500).json({ error: "There was an error while saving the post to the database" })
+    }
+})
+
+router.post('/:id/comments', async (req, res) => {
+    if (!req.body.text) {
+        res.status(400).json({ errorMessage: "Please provide text for the comment." })
+    }
+    else {
+        try {
+            let posts = await db.findById(req.params.id)
+            if (posts.length === 0) {
+                res.status(404).json({ message: "The post with the specified ID does not exist." })
+            }
+            else {
+                let id = await db.insertComment({...req.body, post_id: req.params.id});
+                let comments = await db.findCommentById(id);
+                res.status(201).json(comments[0])
+            }
+        }
+        catch (err) {
+            console.log(err)
+            res.status(500).json({ error: "There was an error while saving the comment to the database" })
+        }
     }
 })
 
