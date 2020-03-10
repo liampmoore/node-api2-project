@@ -8,10 +8,11 @@ const router = express.Router();
 
 //Write all the http methods for this route, for blog posts
 
-router.get('/', (req, res) => {
-    res.status(200).send('router is working');
+router.get('/', async (req, res) => {
+    const posts = await db.find();
+    res.status(200).json(posts)
 })
 
 
-
+//Export the router for the server.js
 module.exports = router;
