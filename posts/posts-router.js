@@ -28,8 +28,7 @@ router.get('/:id', async (req, res) => {
             const post = posts[0];
             res.status(200).json(post)
         }
-    } catch (err) {
-        console.log(err)
+    } catch {
         res.status(500).json({ error: "Internal server error. The posts information could not be retrieved." })
     }
 })
@@ -47,12 +46,10 @@ router.get('/:id/comments', async (req, res) => {
                 res.status(200).json(comments)
             }
             catch {
-                console.log(err)
                 res.status(500).json({ error: "The comments information could not be retrieved." })
             }
         }
-    } catch (err) {
-        console.log(err)
+    } catch {
         res.status(500).json({ error: "The comments information could not be retrieved." })
     }
 })
