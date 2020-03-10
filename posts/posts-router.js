@@ -53,7 +53,21 @@ router.get('/:id/comments', async (req, res) => {
     }
 })
 
-
+router.post('/', async (req, res) => {
+    try {
+        if (!req.body.title || !req.body.contents) {
+            res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+        }
+        else {
+            let id = await db.insert(req.body)
+            let post = await db.findById(id)
+            res.status(200).json(post)
+        }
+    }
+    catch {
+        res.status(500).json({ error: "There was an error while saving the post to the database" })
+    }
+})
 
 
 
